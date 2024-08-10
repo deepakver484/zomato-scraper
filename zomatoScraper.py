@@ -8,7 +8,7 @@ import  logging
 
 # Creating a Class RestaurantScraper for all the scraping Functionality
 class RestaurantScraper:
-    def __init__(self, headless=True):
+    def __init__(self, headless):
         self.headless = headless
         self.driver = self._setup_driver()
         self.logger = self._setup_logger()
@@ -67,8 +67,9 @@ class RestaurantScraper:
                 
                 # Use an explicit wait to ensure new elements are loaded
                 sleep(5)
+                # finding the resturant_cards anchor element
                 li = self.driver.find_elements(By.XPATH, '//img[@alt="Restaurant Card"]/../..')
-                print(len(li))
+                self.logger.info(f"{len(li)} number of restaurants cards found")
                 
                 if len(li) >= num:
                     break
