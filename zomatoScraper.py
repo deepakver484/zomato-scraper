@@ -9,6 +9,15 @@ from time import sleep
 import  logging
 
 
+# This class mimics a WebElement with a .text attribute set to "Not found". 
+# This class can be returned when an element is not found.
+class DummyElement:
+    def __init__(self, text="Not found"):
+        self.text = text
+
+    def get_attribute(self, attribute):
+        return "Not found"
+
 # Creating a Class RestaurantScraper for all the scraping Functionality
 class RestaurantScraper:
     def __init__(self, headless = True):
@@ -96,16 +105,18 @@ class RestaurantScraper:
     tag_path - is is either class ,tagname or xpath
     element - bool (either finding (element :- True) or (elements :- False))
     '''
-    def try_element(self, tag_type, tag_path, driver, element = True):
+    def try_element(self, tag_type, tag_path, driver=None, element = True):
         result = None
-        
+        if driver is None:
+            driver = self.driver
+
         if element:
             try:
                 by_type = getattr(By, tag_type.upper())
                 result = driver.find_element(by_type, tag_path)
                 self.logger.info(f"Element found: {result}")
             except NoSuchElementException:
-                result = 'not found'
+                result = DummyElement()
                 self.logger.warning(f"Element not found with {tag_type}='{tag_path}'")
 
         else:
@@ -114,7 +125,7 @@ class RestaurantScraper:
                 result = driver.find_elements(by_type, tag_path)
                 self.logger.info(f"Elements found: {len(result)}")
             except NoSuchElementException:
-                result = 'not found'
+                result = DummyElement()
                 self.logger.warning(f"Elements not found with {tag_type}='{tag_path}'")
 
         return result
@@ -150,24 +161,24 @@ class RestaurantScraper:
 
 
     def get_head_info(self):
-        head_div = self.try_element('xpath', '//div[contains(text(),"Ratings")]/../../../../..', driver=self.driver)
+        head_div = self.try_element('xpath', '//div[contains(text(),"Ratings")]/../../../../..')
         name_element = self.try_element('TAG_NAME', 'h1', driver= head_div)
         name = name_element.text
 
         print(name)
-        rating_element = self.try_element('XPATH', '//div[contains(text(),"Ratings")]/../../..', driver= self.driver)
+        rating_element = self.try_element('XPATH', '//div[contains(text(),"Ratings")]/../../..')
         ratings = rating_element.text.split('\n')
         print(ratings)
-        category_element = self.try_element('XPATH', '//div[contains(text(),"Ratings")]/../../../../../../section[1]/div', driver=self.driver)
+        category_element = self.try_element('XPATH', '//div[contains(text(),"Ratings")]/../../../../../../section[1]/div')
         category = category_element.text.split(', ')
         print(category)
-        location_element = self.try_element('XPATH','//div[contains(text(),"Ratings")]/../../../../../../section[1]/a', driver = self.driver)
-        location = location_element.text.split()
+        location_element = self.try_element('XPATH','//div[contains(text(),"Ratings")]/../../../../../../section[1]/a')
+        location = location_element.text.split(', ')
         print(location)
-        time_element = self.try_element('XPATH', '//div[contains(text(),"Ratings")]/../../../../../../section[2]', driver = self.driver)
+        time_element = self.try_element('XPATH', '//div[contains(text(),"Ratings")]/../../../../../../section[2]')
         time = time_element.text
         print(time)
-        destination_element = self.try_element('XPATH', '//span[contains(text(),"Direction")]/../..', driver = self.driver)
+        destination_element = self.try_element('XPATH', '//span[contains(text(),"Direction")]/../..')
         destination_url = destination_element.get_attribute('href')
         coordinates = self.get_location(destination_url)
         print(coordinates)
