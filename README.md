@@ -1,4 +1,4 @@
-# zomato-scraper
+# ZOMATO SCRAPER
 
 ## Objective -
 
