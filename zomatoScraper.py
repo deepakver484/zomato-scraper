@@ -61,7 +61,7 @@ class RestaurantScraper:
         try:
             self.logger.info(f"Fetching restaurant URLs from {link}")
             self.driver.get(link)
-            sleep(10)
+            sleep(5)
 
             self._take_screenshot("initial_load.png")
             # Initialize the list and set up an explicit wait
