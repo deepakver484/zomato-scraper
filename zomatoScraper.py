@@ -61,7 +61,7 @@ class RestaurantScraper:
         try:
             self.logger.info(f"Fetching restaurant URLs from {link}")
             self.driver.get(link)
-            sleep(10)
+            sleep(5)
 
             self._take_screenshot("initial_load.png")
             # Initialize the list and set up an explicit wait
@@ -273,7 +273,6 @@ class RestaurantScraper:
             self.logger.warning(f'Unknown dish with color code: {color}')
 
         if len(i_tags) == 1:
-            print(len(i_tags))
             return counter, dish_type
         
         # Process remaining elements
