@@ -1,5 +1,7 @@
 from zomatoScraper import  RestaurantScraper
 import pandas as pd
+import json
+
 
 if __name__ == "__main__":
     # Create an instance of RestaurantScraper with headless mode enabled
@@ -15,8 +17,7 @@ if __name__ == "__main__":
     # df = pd.DataFrame(restaurant_urls, columns =['Web_link'])
     # df.to_csv('web_links.csv', index=False)
     link = 'https://www.zomato.com/ncr/haldirams-janpath-new-delhi/order'
-    scraper.get_restaurant_data(link)
-    
+    restaurant_data = scraper.get_restaurant_data(link)
         
     # except Exception as e:
     #     print(f"An error occurred: {str(e)}")
