@@ -311,7 +311,7 @@ class RestaurantScraper:
 
         # Check if the "read more" button for description exists and click it if found
         dish_description_read_more = self.try_element('xpath', './/span[contains(text(), "read more")]', driver = dish_card)
-        if dish_description_read_more == 'Not found':
+        if dish_description_read_more.text != 'Not found':
             dish_description_read_more.click()
             self.logger.info("Clicked on 'read more' for dish description.")
 
@@ -341,11 +341,11 @@ class RestaurantScraper:
     '''
     def get_restaurant_data(self, restaurant_link):
         try:
-            self.logger.info(f"Fetching restaurant URL from {restaurant_link}")
+            self.logger.info(f"Fetching restaurant data from URL {restaurant_link}")
 
             # getting the restaurant link
             self.driver.get(restaurant_link)
-
+            sleep(5)
             # calling the get_head_info function to get all the info of the restaurant's head
             data = self.get_head_info()
 

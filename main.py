@@ -8,20 +8,22 @@ if __name__ == "__main__":
     scraper = RestaurantScraper(headless=True)
         
     # Define the URL to scrape and the number of restaurant URLs to fetch
-    # link = 'https://www.zomato.com/ncr/delivery-in-connaught-place'  # Replace with your actual URL
-    # num = 100  # Number of URLs to fetch
-    
+    link = 'https://www.zomato.com/ncr/delivery-in-connaught-place'  # Replace with your actual URL
+    num = 25  # Number of Restaurants to fetch
+
     # Get restaurant URLs
-    # restaurant_urls = scraper.get_restaurant_urls(link, num)
+    restaurant_urls = scraper.get_restaurant_urls(link, num)
+    print('*'*100)
+    print('first step completed')
+    print('*'*100)
+    
     # saving restaurant URLs into the a csv name called web_links.csv
-    # df = pd.DataFrame(restaurant_urls, columns =['Web_link'])
-    # df.to_csv('web_links.csv', index=False)
-    link = 'https://www.zomato.com/ncr/haldirams-janpath-new-delhi/order'
-    restaurant_data = scraper.get_restaurant_data(link)
-        
-    # except Exception as e:
-    #     print(f"An error occurred: {str(e)}")
-        
-    # finally:
-    #     # Ensure WebDriver is closed
-    #     scraper.close_driver()
+    df = pd.DataFrame(restaurant_urls, columns =['Web_link'])
+    df.to_csv('web_links.csv', index=False)
+
+    df['restaurant_data'] = df['Web_link'].apply(scraper.get_restaurant_data)
+
+    print('*'*100)
+    print('second step completed')
+    print('*'*100)
+    df.to_csv('restaurant_data.csv', index= False)
