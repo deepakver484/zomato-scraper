@@ -273,7 +273,6 @@ class RestaurantScraper:
             self.logger.warning(f'Unknown dish with color code: {color}')
 
         if len(i_tags) == 1:
-            print(len(i_tags))
             return counter, dish_type
         
         # Process remaining elements

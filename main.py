@@ -13,9 +13,6 @@ if __name__ == "__main__":
 
     # Get restaurant URLs
     restaurant_urls = scraper.get_restaurant_urls(link, num)
-    print('*'*100)
-    print('first step completed')
-    print('*'*100)
     
     # saving restaurant URLs into the a csv name called web_links.csv
     df = pd.DataFrame(restaurant_urls, columns =['Web_link'])
@@ -23,7 +20,4 @@ if __name__ == "__main__":
 
     df['restaurant_data'] = df['Web_link'].apply(scraper.get_restaurant_data)
 
-    print('*'*100)
-    print('second step completed')
-    print('*'*100)
     df.to_csv('restaurant_data.csv', index= False)
