@@ -1,6 +1,7 @@
-# logger_utils.py
 import logging
 
+
+# setting up logger function
 def setup_logger():
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
