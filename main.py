@@ -31,7 +31,7 @@ def clean_data(df):
     cleaner.process_time_column()
     
     cleaned_df = cleaner.get_cleaned_dataframe()
-    cleaned_df.to_csv('restaurant_data.csv', index=False)
+    cleaned_df.to_csv('cleaned_restaurant_data.csv', index=False)
     
     return cleaned_df
 

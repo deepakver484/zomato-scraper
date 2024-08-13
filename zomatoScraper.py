@@ -7,7 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from urllib.parse import urlparse, parse_qs
 from time import sleep
-import  logging
+from utils import setup_logger
 
 
 # This class mimics a WebElement with a .text attribute set to "Not found". 
@@ -25,7 +25,7 @@ class RestaurantScraper:
     def __init__(self, headless = True):
         self.headless = headless
         self.driver = self._setup_driver()
-        self.logger = self._setup_logger()
+        self.logger = setup_logger()
 
 
     def _setup_driver(self):
@@ -35,15 +35,6 @@ class RestaurantScraper:
             chrome_options.add_argument("--window-size=1920x1080")
         chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36")
         return webdriver.Chrome(options=chrome_options)
-
-
-    def _setup_logger(self):
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.INFO)
-        handler = logging.StreamHandler()
-        handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-        logger.addHandler(handler)
-        return logger
 
 
     def _take_screenshot(self, filename):
