@@ -4,6 +4,18 @@
 
 The primary objective of this project is to develop an automated data pipeline that scrapes restaurant information from Zomato, processes and cleans the scraped data, and outputs it in a structured format. This pipeline is designed to be flexible, allowing users to specify the URL of the Zomato restaurant listing and the number of restaurants to scrape. The cleaned data is then stored in a CSV file, making it ready for further analysis or reporting.
 
+## Website Selection - 
+
+I chose to scrape Zomato due to its rich and diverse dataset that offers valuable insights into restaurants, food trends, and customer preferences. Zomato's dynamic HTML content, including elements that are loaded lazily, presents a unique challenge in data extraction. This complexity is particularly evident in dynamic elements like tooltips within SVG elements, which require advanced handling to ensure accurate data capture. Despite these challenges, the quality of data available on Zomato is excellent, making it a valuable source for detailed analysis and insights.
+
+## Tools & Libraries-
+- Python
+- Selenium
+- Streamlit
+- Pandas
+- Logging
+- argparse
+
 ## Files Info
 
 
