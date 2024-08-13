@@ -96,19 +96,33 @@ streamlit run app.py
 ```
 
 ## Detailed approach for the Project
-1. first step involves data scraping from the zomato
-I break down this problem into two major parts first scrap the links of restaurant from the main page
-then scrap data of each restaurants
-further break down restaurants data scraping into the below given parts
-first scrap the data of the head element
-include name, address, categories, operational days, opening and closing time, latitude and longitude, delivery ratings and Dining ratings,
-next step involved 
-get the order section 
-then get all the dish card from the order section
-in next step we iterate through each dish card to get the below given data
-name, rating,price, veg type and description
 <details>
+    
+1.first step involves data scraping from the zomato.
+- I break down this problem into two major parts first scrap the links of restaurant from the main page
+- then scrap data of each restaurants
+- further break down restaurants data scraping into the below given parts
+- first scrap the data of the head element
+- include name, address, categories, operational days, opening and closing time, latitude and longitude, delivery ratings and Dining ratings.
   
+2.next step involved 
+- get the order section 
+- then get all the dish card from the order section
+  
+3.in next step we iterate through each dish card to get the below given data
+- name, rating,price, veg type and description
+
+4.this step involved in data cleaning
+- Convert dictionary column into multiple simple columns
+- Clean Ratings Column
+- Clean time columns
+  
+5.Streamlit App building
+   
+6.Main Pipeline building
+
+7.Rearrage the code following best practices
+   
 ## Scraping Code Setup
 
 <details>
@@ -456,19 +470,9 @@ This section outlines a comprehensive approach for data cleaning. The process in
 class DataCleaner:
     def __init__(self, dataframe):
         self.df = dataframe
-        self.logger = self._setup_logger()
+        self.logger = setup_logger()
 ```
 
-- create logger function.
-```sh
-    def _setup_logger(self):
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.INFO)
-        handler = logging.StreamHandler()
-        handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-        logger.addHandler(handler)
-        return logger
-```
 
 - convert dictionary column into the simple columns.
   ```sh
@@ -515,7 +519,7 @@ class DataCleaner:
         except Exception as e:
             self.logger.error(f"Error cleaning 'rating' column: {e}")
   ```
-- clean the timem column.
+- clean the time column.
   ```sh
     def process_time_column(self):
         try:
@@ -528,6 +532,21 @@ class DataCleaner:
             self.logger.error(f"Error processing 'time' column: {e}")
   ```
 </details>
+
+## Overview of Utils.py
+This file contains common functions used in different files across the project.
+<details>
+
+```sh
+def setup_logger():
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+    logger.addHandler(handler)
+    return logger
+```
+</details>    
 
 ## Overview Of Main.py
 The main.py file orchestrates the process of scraping and cleaning Zomato restaurant data. It does the following:
