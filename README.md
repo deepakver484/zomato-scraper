@@ -110,9 +110,11 @@ name, rating,price, veg type and description
 <details>
   
 ## Scraping Code Setup
+
 <details>
+    
 - Create and initialize the ZomatoScraper class.
- ```sh
+```sh
 class RestaurantScraper:
     def __init__(self, headless = True):
         self.headless = headless
@@ -460,15 +462,17 @@ class DummyElement:
 ## Detailed approach for the data cleaning
 This section outlines a comprehensive approach for data cleaning. The process includes initializing a class, setting up logging, and performing specific cleaning tasks on various columns. The steps are:
 <details>
+    
 - create class and initialize.
-  ```sh
+```sh
 class DataCleaner:
     def __init__(self, dataframe):
         self.df = dataframe
         self.logger = self._setup_logger()
-  ```
+```
+
 - create logger function.
-  ```sh
+```sh
     def _setup_logger(self):
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.INFO)
@@ -476,7 +480,7 @@ class DataCleaner:
         handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
         logger.addHandler(handler)
         return logger
-  ```
+```
 - convert dictionary column into the simple columns.
   ```sh
     def convert_dict_column(self, column_name):
@@ -539,16 +543,17 @@ class DataCleaner:
 ## Overview Of Main.py
 The main.py file orchestrates the process of scraping and cleaning Zomato restaurant data. It does the following:
 <details>
+    
 - **Argument Parsing:** Reads command-line arguments for the Zomato URL and the number of restaurants to scrape.
-  ```sh
+```sh
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Scrape Zomato restaurant data.')
     parser.add_argument('--url', type=str, required=True, help='URL of the Zomato restaurant listing')
     parser.add_argument('--num', type=int, required=True, help='Number of restaurants to fetch')
     return parser.parse_args()
-  ```
+```
 - **Data Scraping:** Fetches restaurant URLs and detailed data, saving the results to CSV files.
-  ```sh
+```sh
 def scrape_data(url, num):
     scraper = RestaurantScraper(headless=True)
     restaurant_urls = scraper.get_restaurant_urls(url, num)
@@ -560,9 +565,9 @@ def scrape_data(url, num):
     df.to_csv('restaurant_data_uncleaned.csv', index=False)
     
     return df
-  ```
+```
 - **Data Cleaning:** Processes and cleans the scraped data by transforming columns and standardizing values, then saves the cleaned data to a final CSV file.
-  ```sh
+```sh
 def clean_data(df):
     cleaner = DataCleaner(df)
     cleaner.convert_dict_column('restaurant_data')
@@ -573,7 +578,7 @@ def clean_data(df):
     cleaned_df.to_csv('restaurant_data.csv', index=False)
     
     return cleaned_df
-  ```
+```
 </details>
 
 ## Streamlit App 
@@ -582,7 +587,9 @@ def clean_data(df):
 ## Overview of Streamlit App
 The Streamlit app is designed to facilitate the scraping and cleaning of Zomato restaurant data through a user-friendly web interface. It allows users to input a URL and the number of restaurants to scrape, then performs the following steps:
 <details>
+
 - **Data Scraping:** Collects restaurant URLs and detailed information, updating progress and status messages to keep the user informed.
+    
   ```sh
   def scrape_data(url, num, progress_bar, status_message):
     # Step 1: Scrape restaurant URLs
