@@ -1,19 +1,11 @@
 import pandas as pd
-import ast
-import logging
+from utils import setup_logger
+
 
 class DataCleaner:
     def __init__(self, dataframe):
         self.df = dataframe
-        self.logger = self._setup_logger()
-
-    def _setup_logger(self):
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.INFO)
-        handler = logging.StreamHandler()
-        handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-        logger.addHandler(handler)
-        return logger
+        self.logger = setup_logger()
 
 
     def convert_dict_column(self, column_name):

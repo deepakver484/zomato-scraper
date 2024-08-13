@@ -29,7 +29,7 @@ I chose to scrape Zomato due to its rich and diverse dataset that offers valuabl
 | [**web_links.csv**](https://github.com/deepakver484/zomato-scraper/web_links.csv)                   | csv file consist data of restaurant's url.                   |
 | [**restaurant_data_uncleaned.csv**](https://github.com/deepakver484/zomato-scraper/restaurant_data_uncleaned.csv)                   | csv file consist restaurant's uncleaned data. |
 | [**cleaned_restaurant_data.csv**](https://github.com/deepakver484/zomato-scraper/cleaned_restaurant_data.csv)                   | csv file consist restaurant's cleaned data.       |
-
+| [**utils.py**](https://github.com/deepakver484/zomato-scraper/utils.py)                   | file consist common base functions.       |
 
 
 
@@ -119,7 +119,7 @@ class RestaurantScraper:
     def __init__(self, headless = True):
         self.headless = headless
         self.driver = self._setup_driver()
-        self.logger = self._setup_logger()
+        self.logger = setup_logger()
 ```
 
 - Set up the driver function.
@@ -132,18 +132,6 @@ class RestaurantScraper:
         chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36")
         return webdriver.Chrome(options=chrome_options)
 ```
-
-
-- Implement the logger function.
-  ```sh
-    def _setup_logger(self):
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.INFO)
-        handler = logging.StreamHandler()
-        handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-        logger.addHandler(handler)
-        return logger
-  ```
 
   
 - Configure the screenshot capture function.
@@ -481,6 +469,7 @@ class DataCleaner:
         logger.addHandler(handler)
         return logger
 ```
+
 - convert dictionary column into the simple columns.
   ```sh
     def convert_dict_column(self, column_name):
@@ -575,7 +564,7 @@ def clean_data(df):
     cleaner.process_time_column()
     
     cleaned_df = cleaner.get_cleaned_dataframe()
-    cleaned_df.to_csv('restaurant_data.csv', index=False)
+    cleaned_df.to_csv('cleaned_restaurant_data.csv', index=False)
     
     return cleaned_df
 ```
