@@ -25,7 +25,7 @@ def scrape_data(url, num, progress_bar, status_message):
         df.at[i, 'restaurant_data'] = scraper.get_restaurant_data(link)
         progress_bar.progress(33 + int(33 * (i + 1) / len(df)))  # Incrementally update progress
     
-    df.to_csv('restaurant_data.csv', index=False)
+    df.to_csv('cleaned_restaurant_data.csv', index=False)
     return df
 
 # Function to clean data

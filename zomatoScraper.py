@@ -7,18 +7,8 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from urllib.parse import urlparse, parse_qs
 from time import sleep
-from utils import setup_logger
+from utils import setup_logger, take_screenshot, try_element
 
-
-# This class mimics a WebElement with a .text attribute set to "Not found". 
-# This class can be returned when an element is not found.
-class DummyElement:
-    def __init__(self, text="Not found"):
-        self.text = text
-
-    def get_attribute(self, attribute):
-        return "Not found"
-    
 
 # Creating a Class RestaurantScraper for all the scraping Functionality
 class RestaurantScraper:
@@ -37,12 +27,6 @@ class RestaurantScraper:
         return webdriver.Chrome(options=chrome_options)
 
 
-    def _take_screenshot(self, filename):
-        """Take a screenshot and save it to the specified file."""
-        self.driver.save_screenshot(filename)
-        self.logger.info(f"Screenshot saved as {filename}")
-
-
     '''
     get_restaurant_urls method to get the links of each restaurant 
     params :-
@@ -54,7 +38,7 @@ class RestaurantScraper:
             self.driver.get(link)
             sleep(5)
 
-            self._take_screenshot("initial_load.png")
+            take_screenshot(self.driver, self.logger, "initial_load.png")
             # Initialize the list and set up an explicit wait
             li = []
             wait = WebDriverWait(self.driver, 10)  # Adjust the timeout as needed
@@ -89,39 +73,6 @@ class RestaurantScraper:
         except Exception as e:
             self.logger.error(f"An error occurred: {str(e)}")
             return []
-        
-
-    '''
-    try_element function - this function handles the error (elements not found)
-    params:-
-    tay_type - it is the type of element I am searching on it
-    tag_path - is is either class ,tagname or xpath
-    element - bool (either finding (element :- True) or (elements :- False))
-    '''
-    def try_element(self, tag_type, tag_path, driver=None, element = True):
-        result = None
-        if driver is None:
-            driver = self.driver
-
-        if element:
-            try:
-                by_type = getattr(By, tag_type.upper())
-                result = driver.find_element(by_type, tag_path)
-                self.logger.info(f"Element found: {result}")
-            except NoSuchElementException:
-                result = DummyElement()
-                self.logger.warning(f"Element not found with {tag_type}='{tag_path}'")
-
-        else:
-            try:
-                by_type = getattr(By, tag_type.upper())
-                result = driver.find_elements(by_type, tag_path)
-                self.logger.info(f"Elements found: {len(result)}")
-            except NoSuchElementException:
-                result = DummyElement()
-                self.logger.warning(f"Elements not found with {tag_type}='{tag_path}'")
-
-        return result
   
 
     '''
@@ -161,14 +112,14 @@ class RestaurantScraper:
     '''
     def get_dynamic_tooltip_text(self, tooltip_xpath, text_element):
         #finding tool tip element
-        tooltip_element = self.try_element('xpath', tooltip_xpath)
+        tooltip_element = try_element('xpath', tooltip_xpath, driver= self.driver, logger=self.logger)
 
         action = ActionChains(self.driver)
         #moving cursor to hover over the tooltip div to activate the script
         action.move_to_element(tooltip_element).perform()
             
         # Capture the tooltip's text from the displayed elements
-        tooltip_text = self.try_element('xpath', text_element).text
+        tooltip_text = try_element('xpath', text_element, driver= self.driver, logger=self.logger).text
         return tooltip_text
 
 
@@ -176,22 +127,22 @@ class RestaurantScraper:
     get_head_info - it will extract data of head element like name, ratings, category, location, time , coordinates
     '''
     def get_head_info(self):
-        head_div = self.try_element('xpath', '//div[contains(text(),"Ratings")]/../../../../..')
+        head_div = try_element('xpath', '//div[contains(text(),"Ratings")]/../../../../..', driver = self.driver, logger=self.logger)
         
         # finding name of the restaurant
-        name_element = self.try_element('TAG_NAME', 'h1', driver= head_div)
+        name_element = try_element('TAG_NAME', 'h1', driver= head_div, logger=self.logger)
         name = name_element.text
         
         # finding the resaurants ratings
-        rating_element = self.try_element('XPATH', '//div[contains(text(),"Ratings")]/../../..')
+        rating_element = try_element('XPATH', '//div[contains(text(),"Ratings")]/../../..', driver = self.driver, logger=self.logger)
         rating = rating_element.text.split('\n')
         
         # finding the categories restaurant served
-        category_element = self.try_element('XPATH', '//div[contains(text(),"Ratings")]/../../../../../../section[1]/div')
+        category_element = try_element('XPATH', '//div[contains(text(),"Ratings")]/../../../../../../section[1]/div', driver = self.driver, logger=self.logger)
         category = category_element.text.split(', ')
         
         #finding the location of the restaurant
-        location_element = self.try_element('XPATH','//div[contains(text(),"Ratings")]/../../../../../../section[1]/a')
+        location_element = try_element('XPATH','//div[contains(text(),"Ratings")]/../../../../../../section[1]/a', driver = self.driver, logger=self.logger)
         location = location_element.text.split(', ')
         
         # finding the opening and closing time
@@ -200,7 +151,7 @@ class RestaurantScraper:
         time = self.get_dynamic_tooltip_text(tooltip_xpath=tooltip_xpath, text_element=text_element)
         
         #findnig the cordinates of the restaurant
-        destination_element = self.try_element('XPATH', '//span[contains(text(),"Direction")]/../..')
+        destination_element = try_element('XPATH', '//span[contains(text(),"Direction")]/../..', driver= self.driver, logger=self.logger)
         destination_url = destination_element.get_attribute('href')
         coordinates = self.get_location(destination_url)
 
@@ -223,13 +174,13 @@ class RestaurantScraper:
     def extract_order_sections(self):
 
         # Find the order sections after the first one
-        order_section = self.try_element('xpath', '//h2[contains(text(),"Order Online")]/../../../section', element=False)
+        order_section = try_element('xpath', '//h2[contains(text(),"Order Online")]/../../../section', driver = self.driver, element=False, logger=self.logger)
         order_section = order_section[1:]  # Skip the first section due not having the relevent content
         
         order_div = []
         # Loop through each section and find div elements with text
         for sec in order_section:
-            divs = self.try_element('xpath', 'div', driver = sec, element=False)
+            divs = try_element('xpath', 'div', driver = sec, element=False, logger=self.logger)
             self.logger.info(f"Found {len(divs)} div elements in section.")
             for div in divs:
                 if div.text:
@@ -239,7 +190,7 @@ class RestaurantScraper:
         dish_card = []
         # Loop through each order div and find inner div elements
         for div in order_div:
-            dish_card += self.try_element('xpath', 'div', driver = div, element=False)
+            dish_card += try_element('xpath', 'div', driver = div, element=False, logger=self.logger)
             self.logger.info(f"Extracted {len(dish_card)} dish cards so far.")
 
         return dish_card
@@ -252,7 +203,7 @@ class RestaurantScraper:
     '''
     def ratings_dish_card(self, dish_card):
         counter = 0
-        i_tags = self.try_element('tag_name', 'i', element=False, driver = dish_card)
+        i_tags = try_element('tag_name', 'i', element=False, driver = dish_card, logger=self.logger)
         
         # Check the color attribute of the first element to judge the dish either veg or nonveg
         color = i_tags[0].get_attribute('color')
@@ -268,13 +219,13 @@ class RestaurantScraper:
         
         # Process remaining elements
         for i_tag in i_tags[1:]:
-            i_element = self.try_element('tag_name', 'title', driver = i_tag)
+            i_element = try_element('tag_name', 'title', driver = i_tag, logger=self.logger)
             if i_element.text != 'Not found':
                 # increase the counter rating
                 counter += 1
             else:
                 # getting the decimal of the rating
-                last = self.try_element('xpath', './/*[local-name()="stop" and @stop-color="#F3C117"]', element=False,driver= i_tag)
+                last = try_element('xpath', './/*[local-name()="stop" and @stop-color="#F3C117"]', element=False,driver= i_tag, logger=self.logger)
                 if len(last) == 0:
                     break
                 else:
@@ -291,22 +242,22 @@ class RestaurantScraper:
     '''
     def extract_dish_card(self, dish_card):
         # Extract the dish name
-        dish_name = self.try_element('tag_name', 'H4', driver=dish_card).text
+        dish_name = try_element('tag_name', 'H4', driver=dish_card, logger=self.logger).text
             
         # Extract the number of votes
-        dish_votes = self.try_element('xpath', './/span[contains(text(), "votes")]', driver = dish_card).text
+        dish_votes = try_element('xpath', './/span[contains(text(), "votes")]', driver = dish_card, logger=self.logger).text
             
         # Extract the dish price
-        dish_price = self.try_element('xpath', './/span[contains(text(), "₹")]', driver = dish_card).text
+        dish_price = try_element('xpath', './/span[contains(text(), "₹")]', driver = dish_card, logger=self.logger).text
 
         # Check if the "read more" button for description exists and click it if found
-        dish_description_read_more = self.try_element('xpath', './/span[contains(text(), "read more")]', driver = dish_card)
+        dish_description_read_more = try_element('xpath', './/span[contains(text(), "read more")]', driver = dish_card, logger=self.logger)
         if dish_description_read_more.text != 'Not found':
             dish_description_read_more.click()
             self.logger.info("Clicked on 'read more' for dish description.")
 
         # Extract the dish description
-        dish_description = self.try_element('tag_name', 'p', driver = dish_card).text
+        dish_description = try_element('tag_name', 'p', driver = dish_card, logger=self.logger).text
 
         #Extract the rating
         rating, dish_type = self.ratings_dish_card(dish_card)
