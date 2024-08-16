@@ -1,6 +1,6 @@
 from zomatoScraper import  RestaurantScraper
 import pandas as pd
-from cleaner import DataCleaner
+from zomatoCleaner import DataCleaner
 import argparse
 
 # funcition for parsing arguments

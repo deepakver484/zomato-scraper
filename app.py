@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from zomatoScraper import RestaurantScraper
-from cleaner import DataCleaner
+from zomatoCleaner import DataCleaner
 import time
 
 # Function to scrape data
