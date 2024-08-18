@@ -7,17 +7,21 @@ class DataCleaner:
         self.df = dataframe
         self.logger = setup_logger()
 
-
+    '''
+    converting dictionary column into plan columns
+    params - column_name you want to convert into plain column
+    '''  
     def convert_dict_column(self, column_name):
         try:
             self.logger.info(f"Converting column '{column_name}' from text to dictionary.")
-            # self.df[column_name] = self.df[column_name].apply(ast.literal_eval)
             expanded_df = self.df[column_name].apply(pd.Series)
             self.df = pd.concat([self.df.drop(columns=column_name), expanded_df], axis=1)
             self.logger.info(f"Column '{column_name}' successfully converted and expanded.")
         except Exception as e:
             self.logger.error(f"Error converting column '{column_name}': {e}")
-
+    '''
+    this is for cleaning ratings column
+    '''
     def clean_ratings(self):
         def ratings(rating):
             try:
@@ -49,6 +53,9 @@ class DataCleaner:
         except Exception as e:
             self.logger.error(f"Error cleaning 'rating' column: {e}")
 
+    '''
+    this is for cleaning time column
+    '''
     def process_time_column(self):
         try:
             self.logger.info("Processing 'time' column.")
@@ -58,7 +65,8 @@ class DataCleaner:
             self.logger.info("'time' column processed.")
         except Exception as e:
             self.logger.error(f"Error processing 'time' column: {e}")
-
+    '''
+    this function is for get the cleaned dataframe
+    '''
     def get_cleaned_dataframe(self):
         return self.df
-
