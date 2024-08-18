@@ -12,8 +12,6 @@ class DummyElement:
         return "Not found"
     
 
-
-
 # setting up logger function
 def setup_logger():
     logger = logging.getLogger(__name__)
@@ -23,6 +21,9 @@ def setup_logger():
     logger.addHandler(handler)
     return logger
 
+'''
+this function is for taking screenshot for debugging
+'''
 def take_screenshot(driver, logger, filename):
     """Take a screenshot and save it to the specified file."""
     driver.save_screenshot(filename)

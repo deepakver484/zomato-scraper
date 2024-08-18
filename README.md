@@ -2,11 +2,11 @@
 
 ## Objective -
 
-The primary objective of this project is to develop an automated data pipeline that scrapes restaurant information from Zomato, processes and cleans the scraped data, and outputs it in a structured format. This pipeline is designed to be flexible, allowing users to specify the URL of the Zomato restaurant listing and the number of restaurants to scrape. The cleaned data is then stored in a CSV file, making it ready for further analysis or reporting.
+The primary objective of this project is to develop an automated data pipeline that scrapes restaurant information from both Zomato and Swiggy, processes and cleans the scraped data, and outputs it in a structured format. This pipeline is designed to be flexible, allowing users to specify the URLs of Zomato and Swiggy restaurant listings and the number of restaurants to scrape. The cleaned data is then stored in a CSV file, making it ready for further analysis or reporting. Additionally, a Streamlit app will be developed to provide an interactive interface, allowing users to seamlessly interact with both scraping scripts.
 
 ## Website Selection - 
 
-I chose to scrape Zomato due to its rich and diverse dataset that offers valuable insights into restaurants, food trends, and customer preferences. Zomato's dynamic HTML content, including elements that are loaded lazily, presents a unique challenge in data extraction. This complexity is particularly evident in dynamic elements like tooltips within SVG elements, which require advanced handling to ensure accurate data capture. Despite these challenges, the quality of data available on Zomato is excellent, making it a valuable source for detailed analysis and insights.
+I chose to scrape Zomato and Swiggy due to their rich and diverse datasets, which offer valuable insights into restaurants, food trends, and customer preferences. Both platforms present unique challenges in data extraction, with Zomato's dynamic HTML content, including lazily loaded elements, and Swiggy's complex web structures. This complexity is particularly evident in dynamic elements like tooltips within SVG elements on Zomato, and in Swiggy's intricate network requests and data retrieval processes, which require advanced handling to ensure accurate data capture. Despite these challenges, the quality of data available on both Zomato and Swiggy is excellent, making them valuable sources for detailed analysis and insights.
 
 ## Tools & Libraries-
 - Python
@@ -21,15 +21,22 @@ I chose to scrape Zomato due to its rich and diverse dataset that offers valuabl
 
 | **File Name**                                                                                   | **Description**                                           |
 |-------------------------------------------------------------------------------------------------|----------------------------------------------             |
-| [**main.py**](https://github.com/deepakver484/zomato-scraper/main.py)                           | Main pipeline script for executing tasks in shell mode.   |
+| [**utils.py**](https://github.com/deepakver484/zomato-scraper/utils.py)                   | file consist common base functions.       |
+| [**zomatomMain.py**](https://github.com/deepakver484/zomato-scraper/zomatomMain.py)                           | Main pipeline script for executing tasks in shell mode.   |
 | [**requirements.txt**](https://github.com/deepakver484/zomato-scraper/requirements.txt)         | Lists Python dependencies for the project.                |
-| [**app.py**](https://github.com/deepakver484/zomato-scraper/app.py)                             | app.py file consist streamlit app code.                   |
-| [**cleaner.py**](https://github.com/deepakver484/zomato-scraper/cleaner.py)                     | cleaner.py file consist cleaning code.                    |
+| [**app.py**](https://github.com/deepakver484/zomato-scraper/app.py)                             | app.py file consist main streamlit app code.                   |
+| [**swiggyScraperApp.py**](https://github.com/deepakver484/zomato-scraper/pages/swiggyScraperApp.py)                             | swiggyScraperApp file consist swiggy scraper app code.                   |
+| [**zomatoScraperApp.py**](https://github.com/deepakver484/zomato-scraper/pages/zomatoScraperApp.py)                             | zomatoScraperApp.py file consist zomato scraper streamlit app code.                   |
+| [**zomatoCleaner.py**](https://github.com/deepakver484/zomato-scraper/zomatoCleaner.py)                     | cleaner.py file consist cleaning code.                    |
 | [**zomatoScraper.py**](https://github.com/deepakver484/zomato-scraper/zomatoScraper.py)         | file consist all the scraping code for zomato.            |
+| [**swiggyScraper.py**](https://github.com/deepakver484/zomato-scraper/swiggyScraper.py)         | file consist all the scraping code for swiggy.            |
+| [**swiggyCleaner.py**](https://github.com/deepakver484/zomato-scraper/swiggyCleaner.py)         | file consist all the cleaning code for swiggy.            |
 | [**web_links.csv**](https://github.com/deepakver484/zomato-scraper/web_links.csv)                   | csv file consist data of restaurant's url.                   |
 | [**restaurant_data_uncleaned.csv**](https://github.com/deepakver484/zomato-scraper/restaurant_data_uncleaned.csv)                   | csv file consist restaurant's uncleaned data. |
-| [**cleaned_restaurant_data.csv**](https://github.com/deepakver484/zomato-scraper/cleaned_restaurant_data.csv)                   | csv file consist restaurant's cleaned data.       |
-| [**utils.py**](https://github.com/deepakver484/zomato-scraper/utils.py)                   | file consist common base functions.       |
+| [**swiggy_restaurant_url.csv**](https://github.com/deepakver484/zomato-scraper/swiggy_restaurant_url.csv)                   | csv file consist restaurant's url data swiggy.       |
+| [**swiggy_uncleaned_restaurant_data.csv**](https://github.com/deepakver484/zomato-scraper/swiggy_uncleaned_restaurant_data.csv)                   | csv file consist restaurant's uncleaned data swiggy.       |
+| [**swiggy_cleaned_restaurant_data.csv**](https://github.com/deepakver484/zomato-scraper/swiggy_uncleaned_restaurant_data.csv)                   | csv file consist restaurant's cleaned data of swiggy.       |
+| [**cleaned_restaurant_data.csv**](https://github.com/deepakver484/zomato-scraper/cleaned_restaurant_data.csv)                   | csv file consist restaurant's cleaned data of zomato.       |
 
 
 
@@ -83,7 +90,7 @@ To get a local copy up and running, follow these steps.
 
  To run pipeline in background run below given python command
 ```sh
-python main.py --url "https://www.zomato.com/ncr/delivery-in-connaught-place" --num 1
+python zomatoMain.py --url "https://www.zomato.com/ncr/delivery-in-connaught-place" --num 1
 ```
 **url** - you can use any url from the zomato website for online delivery.
 
@@ -97,8 +104,12 @@ streamlit run app.py
 
 ## Detailed approach for the Project
 <details>
-    
-1.first step involves data scraping from the zomato.
+
+## Step Involved in Zomato Scraping  
+
+<details>
+
+1.first step involves data scraping from the zomato .
 - I break down this problem into two major parts first scrap the links of restaurant from the main page
 - then scrap data of each restaurants
 - further break down restaurants data scraping into the below given parts
@@ -122,7 +133,10 @@ streamlit run app.py
 6.Main Pipeline building
 
 7.Rearrage the code following best practices
-   
+
+</details>
+
+
 ## Scraping Code Setup
 
 <details>
@@ -686,5 +700,41 @@ The Streamlit app is designed to facilitate the scraping and cleaning of Zomato 
   ```
 The app uses progress bars and status messages to give real-time feedback on the progress of data processing and allows users to download the cleaned data in CSV format.
 </details>
+
+## Step Involved in Swiggy Scraping  
+
+<details>
+
+1.first step involves data scraping from the swiggy .
+- I break down this problem into two major parts first scrap the links of restaurant from the main page
+- then scrap data of each restaurants
+- further break down restaurants data scraping into the below given parts
+- first scrap the data of the head element
+- include name, categories, offers ratings and votes.
+  
+2.next step involved 
+- get the dish elements 
+- then get all the dish element from the dish elements
+  
+3.in next step we iterate through each dish card to get the below given data
+- name, rating, price, veg type and description
+
+4.this step involved in data cleaning
+- Convert dictionary column into multiple simple columns
+- Clean Ratings Column.
+- Clean category Column.
+- Clean offer Column.
+- Clean dish Info.
+- Clean ratings and reviews of dishes.
+
+  
+5.Streamlit App building
+   
+6.Main Pipeline building
+
+7.Rearrage the code following best practices
+
+</details>
+
 
 

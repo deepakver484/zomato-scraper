@@ -12,7 +12,7 @@ def parse_arguments():
 
 # Function to scrape data
 def scrape_data(url, num):
-    scraper = RestaurantScraper(headless=True)
+    scraper = RestaurantScraper(headless=False)
     restaurant_urls = scraper.get_restaurant_urls(url, num)
     
     df = pd.DataFrame(restaurant_urls, columns=['Web_link'])

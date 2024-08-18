@@ -7,7 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from urllib.parse import urlparse, parse_qs
 from time import sleep
 from utils import setup_logger, take_screenshot, try_element
-
+from bs4 import BeautifulSoup
 
 # Creating a Class RestaurantScraper for all the scraping Functionality
 class RestaurantScraper:
@@ -245,15 +245,15 @@ class RestaurantScraper:
             
         # Extract the number of votes
         dish_votes = try_element('xpath', './/span[contains(text(), "votes")]', driver = dish_card, logger=self.logger).text
-            
+
         # Extract the dish price
         dish_price = try_element('xpath', './/span[contains(text(), "₹")]', driver = dish_card, logger=self.logger).text
 
         # Check if the "read more" button for description exists and click it if found
-        dish_description_read_more = try_element('xpath', './/span[contains(text(), "read more")]', driver = dish_card, logger=self.logger)
-        if dish_description_read_more.text != 'Not found':
-            dish_description_read_more.click()
-            self.logger.info("Clicked on 'read more' for dish description.")
+        # dish_description_read_more = try_element('xpath', './/span[contains(text(), "read more")]', driver = dish_card, logger=self.logger)
+        # if dish_description_read_more.text != 'Not found':
+        #     dish_description_read_more.click()
+        #     self.logger.info("Clicked on 'read more' for dish description.")
 
         # Extract the dish description
         dish_description = try_element('tag_name', 'p', driver = dish_card, logger=self.logger).text
@@ -272,7 +272,10 @@ class RestaurantScraper:
             }
 
         return dish_info
-
+    def click_read_more(self):
+        read_more_button = self.driver.find_elements(By.XPATH, '//span[contains(text(), "read more")]')
+        for button in read_more_button:
+            button.click()
 
     '''
     get_restaurant_data - this function will scrap all the info of a restaurant
@@ -292,6 +295,7 @@ class RestaurantScraper:
 
             # calling the extract_order_sectionos function to get all the dish_section elements
             dish_section = self.extract_order_sections()
+            self.click_read_more()
             dish_data  = []
             for dish in dish_section:
                 #calling extract_dish_card function to get teh dish elements from the dish_section
