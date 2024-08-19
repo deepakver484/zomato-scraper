@@ -3,14 +3,24 @@ import streamlit as st
 # Set up the page configuration
 st.set_page_config(page_title="Restaurant Scraper", layout="wide")
 
-# Add a sidebar for navigation between pages
-# st.sidebar.title("Navigation")
-# selected_page = st.sidebar.radio("Go to", ["Swiggy Scraper", "Zomato Scraper"])
 
-# Display the appropriate page based on the selection
-# if selected_page == "Swiggy Scraper":
-#     from pages import swiggyScraperApp
-#     swiggyScraperApp.app()
-# elif selected_page == "Zomato Scraper":
-#     from pages import zomatoScraperApp
-#     zomatoScraperApp.app()
+
+# App Description
+st.write("""
+## Welcome to the Restaurant Scraper App!
+
+This app allows you to scrape restaurant data from two popular platforms: **Zomato** and **Swiggy**. 
+Depending on your selection, the app will guide you through different steps for scraping.
+
+### Zomato Scraping Instructions:
+1. Provide the URL for the Zomato restaurant listings specific to a location for delivery.
+2. Specify the number of restaurants to scrape.
+3. Click the 'Start Scraping' button to begin the process.
+
+### Swiggy Scraping Instructions:
+1. Enter the location you want to scrape.
+2. Click the 'Fetch Location' button to retrieve matching locations.
+3. Select the desired location from the dropdown menu.
+4. Specify the number of restaurants to scrape.
+5. Click the 'Start Scraping' button to begin the process.
+""")

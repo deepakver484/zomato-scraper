@@ -527,6 +527,9 @@ class RestaurantScraper:
         return counter, dish_type   
 
 ```
+
+
+
 </details> 
 
 ## Overview of swiggyScraper.py
@@ -742,6 +745,7 @@ class swiggyScraper:
 </details>
 
 ## Overview of data cleaning of Zomato
+
 This section outlines a comprehensive approach for data cleaning. The process includes initializing a class, setting up logging, and performing specific cleaning tasks on various columns. The steps are:
 <details>
     
